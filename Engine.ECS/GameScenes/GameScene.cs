@@ -8,11 +8,11 @@ namespace Engine.ECS.GameScenes;
 public abstract class GameScene
 {
     public Game Game { get; private set; }
-    public EntityController EntityController { get; private set; }
 
     private World _world;
     private ContentManager _content;
     private SpriteBatch _spriteBatch;
+    private EntityController _entityController;
     
     private bool _isLoaded;
     
@@ -29,17 +29,17 @@ public abstract class GameScene
         _world = world;
         _content = new ContentManager(game.Content.ServiceProvider, "Content");
         _spriteBatch = new SpriteBatch(game.GraphicsDevice);
-        EntityController = new EntityController(this);
+        _entityController = new EntityController(this);
         
         LoadContent(_content);
 
-        EntityController.Update();
+        _entityController.Update();
         _isLoaded = true;
     }
 
     internal void Unload()
     {
-        EntityController = null;
+        _entityController = null;
         _content.Unload();
         _content.Dispose();
         _content = null;
@@ -53,7 +53,7 @@ public abstract class GameScene
     
     internal void Update(GameTime gameTime)
     {
-        EntityController.Update();
+        _entityController.Update();
     }
 
     protected abstract void BeginDraw(SpriteBatch spriteBatch, GameTime gameTime);
@@ -64,6 +64,12 @@ public abstract class GameScene
         BeginDraw(_spriteBatch, gameTime);
         EndDraw(_spriteBatch, gameTime);
     }
+
+    public Entity CreateEntity() => _entityController.CreateEntity();
+
+    public Entity GetEntity(uint entityId) => _entityController.GetEntity(entityId);
+
+    public void DestroyEntity(uint entityId) => _entityController.RemoveEntity(entityId);
 
     public void LoadOtherGameScene(GameScene gameScene) => _world.LoadGameScene(gameScene);
 }

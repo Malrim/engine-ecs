@@ -2,7 +2,7 @@ using Engine.ECS.GameScenes;
 
 namespace Engine.ECS.Entities;
 
-public sealed class EntityController
+internal sealed class EntityController
 {
     public delegate void EntityEventHandler(uint entityId);
     public event EntityEventHandler EntityAdded;
@@ -44,7 +44,7 @@ public sealed class EntityController
 
     public Entity GetEntity(uint entityId) => _entities.TryGetValue(entityId, out var entity) ? entity : null;
 
-    internal void Update()
+    public void Update()
     {
         AddEntities();
         RemoveEntities();
