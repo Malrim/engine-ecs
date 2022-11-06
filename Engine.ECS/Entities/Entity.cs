@@ -1,4 +1,5 @@
 using Engine.ECS.Components;
+using Engine.ECS.GameScenes;
 
 namespace Engine.ECS.Entities;
 
@@ -8,10 +9,26 @@ public sealed class Entity
     public string Tag { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
 
+    private bool _isLoaded;
     private readonly IDictionary<Type, Component> _components = new Dictionary<Type, Component>();
+
+    internal void Initialize(GameScene gameScene)
+    {
+        foreach (var behaviourComponent in _components.Values.OfType<BehaviourComponent>())
+        {
+            behaviourComponent.Start(gameScene);
+        }
+
+        _isLoaded = true;
+    }
 
     public void AttachComponent(Component component)
     {
+        if (_isLoaded)
+        {
+            throw new Exception("Cannot add components at runtime!");
+        }
+        
         if (component == null)
         {
             throw new NullReferenceException("Component is null!");

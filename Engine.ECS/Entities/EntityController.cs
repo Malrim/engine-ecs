@@ -1,21 +1,29 @@
+using Engine.ECS.GameScenes;
+
 namespace Engine.ECS.Entities;
 
-internal sealed class EntityController
+public sealed class EntityController
 {
     public delegate void EntityEventHandler(uint entityId);
     public event EntityEventHandler EntityAdded;
     public event EntityEventHandler EntityRemoved;
     
     private uint _nextEntityId;
+    private readonly GameScene _gameScene;
     private readonly Queue<Entity> _addedEntities = new();
     private readonly Queue<uint> _removedEntities = new();
     private readonly IDictionary<uint, Entity> _entities = new Dictionary<uint, Entity>();
 
+    public EntityController(GameScene gameScene)
+    {
+        _gameScene = gameScene;
+    }
+
     public Entity CreateEntity()
     {
         var entity = new Entity { Id = _nextEntityId++ };
+        
         _addedEntities.Enqueue(entity);
-
         return entity;
     }
 
@@ -36,7 +44,7 @@ internal sealed class EntityController
 
     public Entity GetEntity(uint entityId) => _entities.TryGetValue(entityId, out var entity) ? entity : null;
 
-    public void Update()
+    internal void Update()
     {
         AddEntities();
         RemoveEntities();
@@ -47,6 +55,8 @@ internal sealed class EntityController
         while (_addedEntities.Count > 0)
         {
             var entity = _addedEntities.Dequeue();
+            
+            entity.Initialize(_gameScene);
             
             _entities.Add(entity.Id, entity);
             EntityAdded?.Invoke(entity.Id);
