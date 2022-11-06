@@ -5,7 +5,7 @@ namespace Engine.ECS.Entities;
 
 public sealed class Entity
 {
-    public uint Id { get; internal set; }
+    public uint Id { get; internal init; }
     public string Tag { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
 
