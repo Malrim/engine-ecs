@@ -9,19 +9,13 @@ internal sealed class EntityController
     public event EntityEventHandler EntityRemoved;
     
     private uint _nextEntityId;
-    private readonly GameScene _gameScene;
     private readonly Queue<Entity> _addedEntities = new();
     private readonly Queue<uint> _removedEntities = new();
     private readonly IDictionary<uint, Entity> _entities = new Dictionary<uint, Entity>();
 
-    public EntityController(GameScene gameScene)
+    public Entity CreateEntity(GameScene parent)
     {
-        _gameScene = gameScene;
-    }
-
-    public Entity CreateEntity()
-    {
-        var entity = new Entity { Id = _nextEntityId++ };
+        var entity = new Entity { Id = _nextEntityId++, GameScene = parent };
         
         _addedEntities.Enqueue(entity);
         return entity;
@@ -56,7 +50,7 @@ internal sealed class EntityController
         {
             var entity = _addedEntities.Dequeue();
             
-            entity.Initialize(_gameScene);
+            entity.Initialize();
             
             _entities.Add(entity.Id, entity);
             EntityAdded?.Invoke(entity.Id);

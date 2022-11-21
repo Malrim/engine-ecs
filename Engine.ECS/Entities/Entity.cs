@@ -6,17 +6,18 @@ namespace Engine.ECS.Entities;
 public sealed class Entity
 {
     public uint Id { get; internal init; }
+    public GameScene GameScene { get; internal init; }
     public string Tag { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
 
     private bool _isLoaded;
     private readonly IDictionary<Type, Component> _components = new Dictionary<Type, Component>();
 
-    internal void Initialize(GameScene gameScene)
+    internal void Initialize()
     {
         foreach (var behaviourComponent in _components.Values.OfType<BehaviourComponent>())
         {
-            behaviourComponent.Start(gameScene);
+            behaviourComponent.Start();
         }
 
         _isLoaded = true;

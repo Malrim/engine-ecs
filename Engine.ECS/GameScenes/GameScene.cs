@@ -29,7 +29,7 @@ public abstract class GameScene
         _world = world;
         _content = new ContentManager(game.Content.ServiceProvider, "Content");
         _spriteBatch = new SpriteBatch(game.GraphicsDevice);
-        _entityController = new EntityController(this);
+        _entityController = new EntityController();
         
         LoadContent(_content);
 
@@ -65,7 +65,7 @@ public abstract class GameScene
         EndDraw(_spriteBatch, gameTime);
     }
 
-    public Entity CreateEntity() => _entityController.CreateEntity();
+    public Entity CreateEntity() => _entityController.CreateEntity(this);
 
     public Entity GetEntity(uint entityId) => _entityController.GetEntity(entityId);
 
