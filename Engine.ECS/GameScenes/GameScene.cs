@@ -1,4 +1,5 @@
 using Engine.ECS.Entities;
+using Engine.ECS.GameSystems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,8 +14,11 @@ public abstract class GameScene
     private ContentManager _content;
     private SpriteBatch _spriteBatch;
     private EntityController _entityController;
+    private GameSystemsManager _gameSystemsManager;
     
     private bool _isLoaded;
+    
+    protected void RegisterSystems() { }
     
     protected virtual void LoadContent(ContentManager content) { }
     
@@ -30,7 +34,9 @@ public abstract class GameScene
         _content = new ContentManager(game.Content.ServiceProvider, "Content");
         _spriteBatch = new SpriteBatch(game.GraphicsDevice);
         _entityController = new EntityController();
+        _gameSystemsManager = new GameSystemsManager();
         
+        RegisterSystems();
         LoadContent(_content);
 
         _entityController.Update();
@@ -50,10 +56,14 @@ public abstract class GameScene
         
         _isLoaded = false;
     }
+
+    protected void RegisterSystem(GameSystem gameSystem) =>
+        _gameSystemsManager.RegisterSystem(gameSystem, this, _entityController);
     
     internal void Update(GameTime gameTime)
     {
         _entityController.Update();
+        _gameSystemsManager.Update(gameTime);
     }
 
     protected abstract void BeginDraw(SpriteBatch spriteBatch, GameTime gameTime);
@@ -62,6 +72,7 @@ public abstract class GameScene
     internal void Draw(GameTime gameTime)
     {
         BeginDraw(_spriteBatch, gameTime);
+        _gameSystemsManager.Draw(_spriteBatch, gameTime);
         EndDraw(_spriteBatch, gameTime);
     }
 
