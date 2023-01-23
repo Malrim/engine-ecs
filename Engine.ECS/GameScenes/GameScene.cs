@@ -18,7 +18,7 @@ public abstract class GameScene
     
     private bool _isLoaded;
     
-    protected void RegisterSystems() { }
+    protected virtual void RegisterSystems() { }
     
     protected virtual void LoadContent(ContentManager content) { }
     
@@ -45,6 +45,7 @@ public abstract class GameScene
 
     internal void Unload()
     {
+        _gameSystemsManager = null;
         _entityController = null;
         _content.Unload();
         _content.Dispose();
