@@ -74,5 +74,8 @@ public sealed class Entity
         return component;
     }
     
+    internal IEnumerable<BehaviourComponent> GetBehaviourComponents() =>
+        _components.Values.OfType<BehaviourComponent>();
+    
     public bool ContainsComponent(Type type) => type != null && _components.Keys.Any(type.IsAssignableFrom);
 }
