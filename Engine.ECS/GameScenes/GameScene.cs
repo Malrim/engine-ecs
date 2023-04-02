@@ -9,6 +9,11 @@ namespace Engine.ECS.GameScenes;
 public abstract class GameScene
 {
     public Game Game { get; private set; }
+    
+    protected SpriteSortMode SpriteSortMode { get; set; } = SpriteSortMode.Deferred;
+    protected SamplerState SamplerState  { get; set; }
+    protected BlendState BlendState  { get; set; }
+    protected Color SceneColor { get; set; } = Color.CornflowerBlue;
 
     private World _world;
     private ContentManager _content;
@@ -17,6 +22,8 @@ public abstract class GameScene
     private GameSystemsManager _gameSystemsManager;
     
     private bool _isLoaded;
+    
+    protected virtual void SetUp() { }
     
     protected virtual void RegisterSystems() { }
     
@@ -36,6 +43,7 @@ public abstract class GameScene
         _entityController = new EntityController();
         _gameSystemsManager = new GameSystemsManager();
         
+        SetUp();
         RegisterSystems();
         LoadContent(_content);
 
@@ -67,14 +75,12 @@ public abstract class GameScene
         _gameSystemsManager.Update(gameTime);
     }
 
-    protected abstract void BeginDraw(SpriteBatch spriteBatch, GameTime gameTime);
-    protected abstract void EndDraw(SpriteBatch spriteBatch, GameTime gameTime);
-
     internal void Draw(GameTime gameTime)
     {
-        BeginDraw(_spriteBatch, gameTime);
+        Game.GraphicsDevice.Clear(SceneColor);
+        _spriteBatch.Begin(SpriteSortMode, BlendState, SamplerState);
         _gameSystemsManager.Draw(_spriteBatch, gameTime);
-        EndDraw(_spriteBatch, gameTime);
+        _spriteBatch.End();
     }
 
     public Entity CreateEntity() => _entityController.CreateEntity(this);
