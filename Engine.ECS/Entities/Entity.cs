@@ -65,4 +65,6 @@ public sealed class Entity
 
         return component;
     }
+    
+    public bool ContainsComponent(Type type) => type != null && _components.Keys.Any(type.IsAssignableFrom);
 }

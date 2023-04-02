@@ -5,6 +5,8 @@ namespace Engine.ECS.GameSystems;
 
 public abstract class GameSystem
 {
+    protected abstract ComponentTypes ComponentTypes { get; }
+    
     protected GameScene GameScene { get; private set; }
     protected readonly IList<uint> Entities = new List<uint>();
     
@@ -19,6 +21,11 @@ public abstract class GameSystem
     
     private void OnEntityAddedCallback(uint entityId)
     {
+        if (!ComponentTypes.Verify(GameScene.GetEntity(entityId)))
+        {
+            return;
+        }
+        
         Entities.Add(entityId);
         OnEntityAdded(entityId);
     }
