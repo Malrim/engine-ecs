@@ -1,4 +1,5 @@
 using Engine.ECS.Components;
+using Engine.ECS.Components.Physics;
 using Engine.ECS.GameScenes;
 
 namespace Engine.ECS.Entities;
@@ -7,11 +8,18 @@ public sealed class Entity
 {
     public uint Id { get; internal init; }
     public GameScene GameScene { get; internal init; }
+    public Transform Transform { get; }
     public string Tag { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
 
     private bool _isLoaded;
     private readonly IDictionary<Type, Component> _components = new Dictionary<Type, Component>();
+
+    public Entity()
+    {
+        Transform = new Transform();
+        AttachComponent(Transform);
+    }
 
     internal void Initialize()
     {
