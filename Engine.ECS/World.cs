@@ -29,6 +29,7 @@ public sealed class World
             _activeGameScene.Load(this, _game);
         }
         
+        InputManager.Update();
         _activeGameScene?.Update(gameTime);
     }
 
