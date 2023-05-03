@@ -27,7 +27,7 @@ public abstract class GameScene
     
     protected virtual void RegisterSystems() { }
     
-    protected virtual void LoadContent(ContentManager content) { }
+    protected virtual void LoadContent() { }
     
     internal void Load(World world, Game game)
     {
@@ -45,7 +45,7 @@ public abstract class GameScene
         
         SetUp();
         RegisterSystems();
-        LoadContent(_content);
+        LoadContent();
 
         _entityController.Update();
         _isLoaded = true;
@@ -83,7 +83,7 @@ public abstract class GameScene
         _spriteBatch.End();
     }
 
-    public Entity CreateEntity() => _entityController.CreateEntity(this);
+    public void AddEntity(Action<Entity, ContentManager> setUpEntity) => setUpEntity(_entityController.CreateEntity(this), _content);
 
     public Entity GetEntity(uint entityId) => _entityController.GetEntity(entityId);
 
