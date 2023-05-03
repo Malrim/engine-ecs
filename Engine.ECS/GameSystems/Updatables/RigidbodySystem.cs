@@ -12,7 +12,7 @@ public class RigidbodySystem : UpdatableGameSystem
     {
         var rigidbody = entity.GetComponent<Rigidbody>();
         
-        entity.Transform.Position = rigidbody.Velocity;
+        entity.Transform.Position += rigidbody.Velocity;
         rigidbody.Velocity = Vector2.Zero;
     }
 }
