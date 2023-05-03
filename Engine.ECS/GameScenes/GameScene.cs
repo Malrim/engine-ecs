@@ -89,5 +89,5 @@ public abstract class GameScene
 
     public void DestroyEntity(uint entityId) => _entityController.RemoveEntity(entityId);
 
-    public void LoadOtherGameScene(GameScene gameScene) => _world.LoadGameScene(gameScene);
+    public void LoadGameScene(GameScene gameScene) => _world.LoadGameScene(gameScene);
 }
